@@ -112,7 +112,7 @@ namespace proyecto12.Repositorio
             return p;
         }
 
-        public async Task <IEnumerable<Producto>> DameProductosAsincrono()
+        public async Task <IEnumerable<Producto>> DameProductosAsincrono(int pag, int reg)
         {
             SqlConnection sqlConexion = conexion();
             SqlCommand Comm = null;
@@ -123,6 +123,8 @@ namespace proyecto12.Repositorio
                 Comm = sqlConexion.CreateCommand();
                 Comm.CommandText = "dbo.Productos_Obtener";
                 Comm.CommandType = System.Data.CommandType.StoredProcedure;
+                Comm.Parameters.Add("@PAG", SqlDbType.Int).Value=pag;
+                Comm.Parameters.Add("@REG", SqlDbType.Int).Value = reg;
                 SqlDataReader reader = await Comm.ExecuteReaderAsync();
                 Producto p = null;
                 while (reader.Read())

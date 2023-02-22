@@ -22,9 +22,9 @@ namespace proyecto12.Controllers
 
         [HttpGet]
         [Authorize]
-        public async Task <IEnumerable<ProductoDTO>> DameProductos()
+        public async Task <IEnumerable<ProductoDTO>> DameProductos(int pag, int reg)
         {
-            var listaProductos = (await repositorio.DameProductosAsincrono()).Select(p => p.convertirDTO());
+            var listaProductos = (await repositorio.DameProductosAsincrono(pag,reg)).Select(p => p.convertirDTO());
             return listaProductos;
         }
 

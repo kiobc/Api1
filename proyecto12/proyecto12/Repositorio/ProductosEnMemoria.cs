@@ -20,7 +20,7 @@ new Producto {ID=3, Nombre="Destornillador", Descripcion="Excelente destornillad
 
         public string SKU { get; private set; }
 
-        public async Task <IEnumerable<Producto>> DameProductosAsincrono ()
+        public async Task <IEnumerable<Producto>> DameProductosAsincrono (int pag, int reg)
         {
             return await Task.FromResult (productos);
         }
@@ -61,5 +61,6 @@ new Producto {ID=3, Nombre="Destornillador", Descripcion="Excelente destornillad
         {
             throw new NotImplementedException();
         }
+
     }
 }
