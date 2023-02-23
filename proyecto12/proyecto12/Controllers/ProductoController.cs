@@ -10,7 +10,7 @@ namespace proyecto12.Controllers
 {
     [Route("productos")]
     [ApiController]
-    [Authorize(AuthenticationSchemes =JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class ProductoController : ControllerBase
     {
         private readonly IProductosEnMemoria repositorio;
@@ -22,15 +22,15 @@ namespace proyecto12.Controllers
 
         [HttpGet]
         [Authorize]
-        public async Task <IEnumerable<ProductoDTO>> DameProductos(int pag, int reg)
+        public async Task<IEnumerable<ProductoDTO>> DameProductos(int pag, int reg)
         {
-            var listaProductos = (await repositorio.DameProductosAsincrono(pag,reg)).Select(p => p.convertirDTO());
+            var listaProductos = (await repositorio.DameProductosAsincrono(pag, reg)).Select(p => p.convertirDTO());
             return listaProductos;
         }
 
         [HttpGet("{codProducto}")]
         [Authorize]
-        public async Task <ActionResult<ProductoDTO>> DameProducto(string codProducto)
+        public async Task<ActionResult<ProductoDTO>> DameProducto(string codProducto)
         {
             var producto = (await repositorio.DameProductoAsincrono(codProducto)).convertirDTO();
             if (producto == null)
@@ -45,7 +45,7 @@ namespace proyecto12.Controllers
         {
             Producto producto = new Producto
             {
-                
+
                 Nombre = p.Nombre,
                 Descripcion = p.Descripcion,
                 Precio = p.Precio,
@@ -73,9 +73,9 @@ namespace proyecto12.Controllers
         }
         [HttpDelete]
         [Authorize]
-        public async Task <ActionResult> BorrarProducto(String codProducto)
+        public async Task<ActionResult> BorrarProducto(String codProducto)
         {
-            Producto existeProducto =await  repositorio.DameProductoAsincrono(codProducto);
+            Producto existeProducto = await repositorio.DameProductoAsincrono(codProducto);
             if (existeProducto is null)
             {
                 return NotFound();
@@ -83,5 +83,21 @@ namespace proyecto12.Controllers
             await repositorio.BorrarProductoAsincrono(codProducto);
             return NoContent();
         }
+
+        [HttpPost("GuardarImagen")]
+        public async Task<string> GuardarImagen([FromForm] SubirImagenAPI fichero)
+            {
+            var ruta = String.Empty;
+            if (fichero.Archivo.Length > 0)
+            {
+                var nombreArchivo = Guid.NewGuid().ToString() + ".jpg";
+                ruta = $"Imagenes/{nombreArchivo}";
+                using (var stream = new FileStream(ruta, FileMode.Create))
+                {
+                    await fichero.Archivo.CopyToAsync(stream);
+                }
+            }
+            return ruta;
+            }
     }
 }
